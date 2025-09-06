@@ -1,0 +1,1 @@
+export { default as component } from "../../../../src/routes/branch-map/[id]/+page.svelte";

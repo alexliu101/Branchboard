@@ -15,7 +15,12 @@
 	$: itemTypeParam = $page.url.searchParams.get('type') || 'event';
 	
 	onMount(async () => {
-		await loadItem();
+		if (typeof window !== 'undefined') {
+			await loadItem();
+		} else {
+			loading = false;
+			error = 'Loading...';
+		}
 	});
 	
 	async function loadItem() {

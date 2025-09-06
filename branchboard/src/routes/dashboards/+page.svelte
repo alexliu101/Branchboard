@@ -25,8 +25,10 @@
 	let activeBranches = [];
 	
 	onMount(async () => {
-		await storeActions.initializeData();
-		await loadDashboardData();
+		if (typeof window !== 'undefined') {
+			await storeActions.initializeData();
+			await loadDashboardData();
+		}
 	});
 	
 	async function loadDashboardData() {
@@ -43,7 +45,11 @@
 		
 		// Load expiring decisions
 		try {
-			expiringDecisions = await dbUtils.getExpiringDecisions(7); // Next 7 days
+			if (typeof window !== 'undefined') {
+				expiringDecisions = await dbUtils.getExpiringDecisions(7); // Next 7 days
+			} else {
+				expiringDecisions = [];
+			}
 		} catch (error) {
 			console.error('Error loading expiring decisions:', error);
 			expiringDecisions = [];

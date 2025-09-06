@@ -1,41 +1,81 @@
-import Dexie from 'dexie';
+// Conditional import - only in browser
+let Dexie, BranchboardDB;
 
-export class BranchboardDB extends Dexie {
-	constructor() {
-		super('BranchboardDB');
-		
-		this.version(1).stores({
-			events: '++id, title, start, end, location, notes, hasBranchMap, createdAt, updatedAt',
-			scenarios: '++id, title, description, priority, hasBranchMap, createdAt, updatedAt',
-			branchNodes: '++id, type, description, parentId, eventId, scenarioId, x, y, isCurrentBranch, decisionDeadline, createdAt, updatedAt',
-			tasks: '++id, title, duration, deadline, timeWindow, priority, dependsOn, sourceNodeId, status, estimatedHours, actualHours, scheduledDate, scheduledStartTime, scheduledEndTime, createdAt, updatedAt, completedAt',
-			signals: '++id, metricName, threshold, direction, branchNodeId, currentValue, isTriggered, createdAt, updatedAt',
-			assumptions: '++id, statement, confidence, linkedNodeId, linkedScenarioId, linkedEventId, reviewDate, isActive, createdAt, updatedAt',
-			risks: '++id, description, likelihood, impact, mitigation, contingency, linkedNodeId, linkedScenarioId, linkedEventId, isActive, createdAt, updatedAt',
-			edges: '++id, sourceNodeId, targetNodeId, label, createdAt, updatedAt',
-			userSettings: '++id, key, value, updatedAt'
-		});
-		
-		// Define the data structure
-		this.events = this.events;
-		this.scenarios = this.scenarios;
-		this.branchNodes = this.branchNodes;
-		this.tasks = this.tasks;
-		this.signals = this.signals;
-		this.assumptions = this.assumptions;
-		this.risks = this.risks;
-		this.edges = this.edges;
-		this.userSettings = this.userSettings;
+if (typeof window !== 'undefined') {
+	// Dynamic import for browser only
+	const dexieModule = await import('dexie');
+	Dexie = dexieModule.default;
+	
+	class BranchboardDBClass extends Dexie {
+		constructor() {
+			super('BranchboardDB');
+			
+			this.version(1).stores({
+				events: '++id, title, start, end, location, notes, hasBranchMap, createdAt, updatedAt',
+				scenarios: '++id, title, description, priority, hasBranchMap, createdAt, updatedAt',
+				branchNodes: '++id, type, description, parentId, eventId, scenarioId, x, y, isCurrentBranch, decisionDeadline, createdAt, updatedAt',
+				tasks: '++id, title, duration, deadline, timeWindow, priority, dependsOn, sourceNodeId, status, estimatedHours, actualHours, scheduledDate, scheduledStartTime, scheduledEndTime, createdAt, updatedAt, completedAt',
+				signals: '++id, metricName, threshold, direction, branchNodeId, currentValue, isTriggered, createdAt, updatedAt',
+				assumptions: '++id, statement, confidence, linkedNodeId, linkedScenarioId, linkedEventId, reviewDate, isActive, createdAt, updatedAt',
+				risks: '++id, description, likelihood, impact, mitigation, contingency, linkedNodeId, linkedScenarioId, linkedEventId, isActive, createdAt, updatedAt',
+				edges: '++id, sourceNodeId, targetNodeId, label, createdAt, updatedAt',
+				userSettings: '++id, key, value, updatedAt'
+			});
+			
+			// Define the data structure
+			this.events = this.events;
+			this.scenarios = this.scenarios;
+			this.branchNodes = this.branchNodes;
+			this.tasks = this.tasks;
+			this.signals = this.signals;
+			this.assumptions = this.assumptions;
+			this.risks = this.risks;
+			this.edges = this.edges;
+			this.userSettings = this.userSettings;
+		}
 	}
+	
+	BranchboardDB = BranchboardDBClass;
+} else {
+	// Mock class for SSR
+	BranchboardDB = class {
+		constructor() {
+			// Mock constructor for SSR
+		}
+	};
 }
 
-// Create the database instance
-export const db = new BranchboardDB();
+export { BranchboardDB };
+
+// Create the database instance (lazy initialization)
+let dbInstance = null;
+
+export const db = new Proxy({}, {
+	get(target, prop) {
+		if (!dbInstance) {
+			if (typeof window !== 'undefined') {
+				dbInstance = new BranchboardDB();
+			} else {
+				// Return a mock object for SSR
+				return () => Promise.reject(new Error('Database not available during SSR'));
+			}
+		}
+		return dbInstance[prop];
+	}
+});
+
+// Helper function to check if we're in browser environment
+function isBrowser() {
+	return typeof window !== 'undefined' && typeof indexedDB !== 'undefined';
+}
 
 // Database utilities and helper functions
 export const dbUtils = {
 	// Event operations
 	async createEvent(eventData) {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		const now = new Date().toISOString();
 		return await db.events.add({
 			...eventData,
@@ -46,6 +86,9 @@ export const dbUtils = {
 	},
 
 	async updateEvent(id, updates) {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.events.update(id, {
 			...updates,
 			updatedAt: new Date().toISOString()
@@ -53,10 +96,16 @@ export const dbUtils = {
 	},
 
 	async getEvent(id) {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.events.get(id);
 	},
 
 	async getAllEvents() {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.events.orderBy('start').toArray();
 	},
 
@@ -102,6 +151,9 @@ export const dbUtils = {
 	},
 
 	async getAllScenarios() {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.scenarios.orderBy('priority').reverse().toArray();
 	},
 
@@ -167,6 +219,9 @@ export const dbUtils = {
 	},
 
 	async getCurrentBranches() {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.branchNodes.where('isCurrentBranch').equals(true).toArray();
 	},
 
@@ -216,6 +271,9 @@ export const dbUtils = {
 	},
 
 	async getAllTasks() {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.tasks.toArray();
 	},
 
@@ -289,6 +347,9 @@ export const dbUtils = {
 	},
 
 	async getTriggeredSignals() {
+		if (!isBrowser()) {
+			throw new Error('Database operations are only available in the browser');
+		}
 		return await db.signals.where('isTriggered').equals(true).toArray();
 	},
 
@@ -534,10 +595,21 @@ export const dbUtils = {
 	}
 };
 
-// Initialize database and seed demo data if empty
-db.ready(async () => {
-	const eventCount = await db.events.count();
-	if (eventCount === 0) {
-		await dbUtils.seedDemoData();
-	}
-});
+// Initialize database and seed demo data if empty (browser-only)
+if (typeof window !== 'undefined') {
+	// Use setTimeout to ensure this runs after the proxy is set up
+	setTimeout(() => {
+		if (dbInstance && dbInstance.ready) {
+			dbInstance.ready(async () => {
+				try {
+					const eventCount = await dbInstance.events.count();
+					if (eventCount === 0) {
+						await dbUtils.seedDemoData();
+					}
+				} catch (error) {
+					console.error('Error initializing database:', error);
+				}
+			});
+		}
+	}, 0);
+}

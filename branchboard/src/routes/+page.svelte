@@ -11,18 +11,23 @@
 	let recentSignals = [];
 	
 	onMount(async () => {
-		// Initialize data
-		await storeActions.initializeData();
-		await storeActions.loadSchedule();
+		// Only initialize data in browser environment
+		if (typeof window !== 'undefined') {
+			// Initialize data
+			await storeActions.initializeData();
+			await storeActions.loadSchedule();
+			
+			loadTodaysSchedule();
+			loadCurrentBranchInfo();
+		}
 		
 		// Update time every minute
 		const timeInterval = setInterval(() => {
 			currentTime = new Date();
-			loadTodaysSchedule();
+			if (typeof window !== 'undefined') {
+				loadTodaysSchedule();
+			}
 		}, 60000);
-		
-		loadTodaysSchedule();
-		loadCurrentBranchInfo();
 		
 		return () => {
 			clearInterval(timeInterval);
@@ -30,11 +35,28 @@
 	});
 	
 	async function loadTodaysSchedule() {
+		if (typeof window === 'undefined') {
+			// Skip database operations during SSR
+			todaysSchedule = [];
+			return;
+		}
 		todaysSchedule = await storeActions.getDailySchedule(new Date());
 	}
 	
 	async function loadCurrentBranchInfo() {
 		try {
+			if (typeof window === 'undefined') {
+				// Skip database operations during SSR
+				currentBranchInfo = {
+					branch: 'Loading...',
+					parent: 'Initializing...',
+					parentType: null,
+					confidence: 0,
+					recentSignals: []
+				};
+				return;
+			}
+			
 			// Get current branch information
 			const branches = await storeActions.getCurrentBranches?.() || $currentBranches;
 			

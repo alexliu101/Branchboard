@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/branch-map" | "/branch-map/[id]" | "/dashboards" | "/tasks" | "/upcoming";
+		RouteId(): "/" | "/branch-map" | "/branch-map/[id]" | "/dashboards" | "/minimal" | "/review" | "/simple" | "/tasks" | "/test" | "/upcoming";
 		RouteParams(): {
 			"/branch-map/[id]": { id: string }
 		};
@@ -36,11 +36,15 @@ declare module "$app/types" {
 			"/branch-map": { id?: string };
 			"/branch-map/[id]": { id: string };
 			"/dashboards": Record<string, never>;
+			"/minimal": Record<string, never>;
+			"/review": Record<string, never>;
+			"/simple": Record<string, never>;
 			"/tasks": Record<string, never>;
+			"/test": Record<string, never>;
 			"/upcoming": Record<string, never>
 		};
-		Pathname(): "/" | "/branch-map" | "/branch-map/" | `/branch-map/${string}` & {} | `/branch-map/${string}/` & {} | "/dashboards" | "/dashboards/" | "/tasks" | "/tasks/" | "/upcoming" | "/upcoming/";
+		Pathname(): "/" | "/branch-map" | "/branch-map/" | `/branch-map/${string}` & {} | `/branch-map/${string}/` & {} | "/dashboards" | "/dashboards/" | "/minimal" | "/minimal/" | "/review" | "/review/" | "/simple" | "/simple/" | "/tasks" | "/tasks/" | "/test" | "/test/" | "/upcoming" | "/upcoming/";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/icon.svg" | string & {};
+		Asset(): "/favicon.ico" | "/favicon.png" | "/icon.svg" | string & {};
 	}
 }

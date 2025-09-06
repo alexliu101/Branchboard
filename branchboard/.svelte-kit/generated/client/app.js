@@ -7,7 +7,11 @@ export const nodes = [
 	() => import('./nodes/3'),
 	() => import('./nodes/4'),
 	() => import('./nodes/5'),
-	() => import('./nodes/6')
+	() => import('./nodes/6'),
+	() => import('./nodes/7'),
+	() => import('./nodes/8'),
+	() => import('./nodes/9'),
+	() => import('./nodes/10')
 ];
 
 export const server_loads = [];
@@ -16,8 +20,12 @@ export const dictionary = {
 		"/": [2],
 		"/branch-map/[id]": [3],
 		"/dashboards": [4],
-		"/tasks": [5],
-		"/upcoming": [6]
+		"/minimal": [5],
+		"/review": [6],
+		"/simple": [7],
+		"/tasks": [8],
+		"/test": [9],
+		"/upcoming": [10]
 	};
 
 export const hooks = {

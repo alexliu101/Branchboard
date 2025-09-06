@@ -185,6 +185,11 @@ export const storeActions = {
 	// Load current branches
 	async loadCurrentBranches() {
 		try {
+			if (typeof window === 'undefined') {
+				// Skip database operations during SSR
+				currentBranches.set([]);
+				return;
+			}
 			const branches = await dbUtils.getCurrentBranches();
 			currentBranches.set(branches);
 		} catch (error) {
@@ -196,10 +201,16 @@ export const storeActions = {
 	// Events
 	async loadEvents() {
 		try {
+			if (typeof window === 'undefined') {
+				// Skip database operations during SSR
+				events.set([]);
+				return;
+			}
 			const eventList = await dbUtils.getAllEvents();
 			events.set(eventList);
 		} catch (error) {
 			console.error('Error loading events:', error);
+			events.set([]);
 			storeActions.showNotification('Error loading events', 'error');
 		}
 	},
@@ -241,10 +252,16 @@ export const storeActions = {
 	// Scenarios
 	async loadScenarios() {
 		try {
+			if (typeof window === 'undefined') {
+				// Skip database operations during SSR
+				scenarios.set([]);
+				return;
+			}
 			const scenarioList = await dbUtils.getAllScenarios();
 			scenarios.set(scenarioList);
 		} catch (error) {
 			console.error('Error loading scenarios:', error);
+			scenarios.set([]);
 			storeActions.showNotification('Error loading scenarios', 'error');
 		}
 	},
@@ -286,10 +303,16 @@ export const storeActions = {
 	// Tasks
 	async loadTasks() {
 		try {
+			if (typeof window === 'undefined') {
+				// Skip database operations during SSR
+				tasks.set([]);
+				return;
+			}
 			const taskList = await dbUtils.getAllTasks();
 			tasks.set(taskList);
 		} catch (error) {
 			console.error('Error loading tasks:', error);
+			tasks.set([]);
 			storeActions.showNotification('Error loading tasks', 'error');
 		}
 	},
@@ -335,10 +358,16 @@ export const storeActions = {
 	// Signals
 	async loadSignals() {
 		try {
+			if (typeof window === 'undefined') {
+				// Skip database operations during SSR
+				signals.set([]);
+				return;
+			}
 			const signalList = await dbUtils.getTriggeredSignals();
 			signals.set(signalList);
 		} catch (error) {
 			console.error('Error loading signals:', error);
+			signals.set([]);
 		}
 	},
 

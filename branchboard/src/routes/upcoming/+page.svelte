@@ -11,7 +11,7 @@
 	
 	onMount(async () => {
 		// Initialize data if not already loaded
-		if ($events.length === 0 || $scenarios.length === 0) {
+		if (typeof window !== 'undefined' && ($events.length === 0 || $scenarios.length === 0)) {
 			await storeActions.initializeData();
 		}
 	});

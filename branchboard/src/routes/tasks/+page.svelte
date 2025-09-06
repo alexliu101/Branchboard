@@ -11,8 +11,10 @@
 	let filter = 'active';
 	
 	onMount(async () => {
-		await storeActions.loadTasks();
-		await storeActions.loadSchedule();
+		if (typeof window !== 'undefined') {
+			await storeActions.loadTasks();
+			await storeActions.loadSchedule();
+		}
 	});
 	
 	async function optimizeSchedule() {

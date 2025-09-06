@@ -1,0 +1,1 @@
+import{i as o}from"./CdyQOU9H.js";function p(e){return function(...t){var n=t[0];return n.stopPropagation(),e?.apply(this,t)}}function s(e){return function(...t){var n=t[0];return n.preventDefault(),e?.apply(this,t)}}function u(e,t){var n=e.$$events?.[t.type],r=o(n)?n.slice():n==null?[]:[n];for(var a of r)a.call(this,t)}export{u as b,s as p,p as s};

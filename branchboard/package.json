@@ -1,0 +1,44 @@
+{
+  "name": "branchboard",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
+  },
+  "description": "A personal strategy cockpit PWA - tracks your world, maps possible futures, and turns branching scenarios into scheduled tasks",
+  "keywords": [
+    "pwa",
+    "planning",
+    "strategy",
+    "scheduler",
+    "branching"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.19",
+    "@fullcalendar/daygrid": "^6.1.19",
+    "@fullcalendar/interaction": "^6.1.19",
+    "@sveltejs/adapter-auto": "^6.1.0",
+    "@sveltejs/kit": "^2.37.0",
+    "@vite-pwa/sveltekit": "^1.0.0",
+    "cytoscape": "^3.33.1",
+    "dexie": "^4.2.0",
+    "javascript-lp-solver": "^0.4.24",
+    "svelte": "^5.38.7",
+    "workbox-expiration": "^7.3.0",
+    "workbox-precaching": "^7.3.0",
+    "workbox-routing": "^7.3.0",
+    "workbox-strategies": "^7.3.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.1.4",
+    "svelte-check": "^4.3.1",
+    "vite": "^7.1.4"
+  }
+}
